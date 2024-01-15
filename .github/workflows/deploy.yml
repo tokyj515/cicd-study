@@ -10,7 +10,7 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: my-cicd-bucket-5
-  CODE_DEPLOY_APPLICATION_NAME: cicid-test-CD
+  CODE_DEPLOY_APPLICATION_NAME: cicd-test-CD
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: cicd-test-CD-group
   # applicaion.yml 파일 위치 설정
   RESOURCE_PATH: ./src/main/resources/application.yml
