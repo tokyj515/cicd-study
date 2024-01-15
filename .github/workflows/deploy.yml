@@ -20,15 +20,31 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: production
-      - name: JDK 17 설치
+      - name: JDK 11 설치
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'corretto'
+          java-version: '11'
+          distribution: 'temurin'
       - name: gradlew에 실행 권한 부여
         run: chmod +x ./gradlew
-      - name: 프로젝트 빌드
-        run: ./gradlew clean build -x test
+
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+        with:
+          arguments: 'build'
+
+#      - name: 프로젝트 빌드
+#        use: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+#        with:
+#          arguments: clean build -x test
+##        run: ./gradlew clean build -x test
+#
+
+
+
       - name: AWS credential 설정
         uses: aws-actions/configure-aws-credentials@v1
         with:
