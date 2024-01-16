@@ -1,19 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-ROOT_PATH="/home/ubuntu/spring-github-action"
-JAR="$ROOT_PATH/application.jar"
+PROJECT_ROOT="/home/ubuntu/app"
+JAR_FILE="$PROJECT_ROOT/spring-webapp.jar"
 
-APP_LOG="$ROOT_PATH/application.log"
-ERROR_LOG="$ROOT_PATH/error.log"
-START_LOG="$ROOT_PATH/start.log"
+DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
-NOW=$(date +%c)
+TIME_NOW=$(date +%c)
 
-echo "[$NOW] $JAR 복사" >> $START_LOG
-cp $ROOT_PATH/build/libs/spring-github-action-1.0.0.jar $JAR
+# 현재 구동 중인 애플리케이션 pid 확인
+CURRENT_PID=$(pgrep -f $JAR_FILE)
 
-echo "[$NOW] > $JAR 실행" >> $START_LOG
-nohup java -jar $JAR > $APP_LOG 2> $ERROR_LOG &
-
-SERVICE_PID=$(pgrep -f $JAR)
-echo "[$NOW] > 서비스 PID: $SERVICE_PID" >> $START_LOG
+# 프로세스가 켜져 있으면 종료
+if [ -z $CURRENT_PID ]; then
+  echo "$TIME_NOW > 현재 실행중인 애플리케이션이 없습니다" >> $DEPLOY_LOG
+else
+  echo "$TIME_NOW > 실행중인 $CURRENT_PID 애플리케이션 종료 " >> $DEPLOY_LOG
+  kill -15 $CURRENT_PID
+fi
