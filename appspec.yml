@@ -16,4 +16,4 @@ hooks:
   ApplicationStart:
     - location: scripts/build.sh
       timeout: 60
-      runas: ubuntu
+      runas: root
