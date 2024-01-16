@@ -1,8 +1,8 @@
 #!/bin/bash
 
-ROOT_PATH="/home/ubuntu/spring-github-action"
-JAR="$ROOT_PATH/application.jar"
-STOP_LOG="$ROOT_PATH/stop.log"
+PROJECT_ROOT="/home/ubuntu/app"
+JAR_FILE="$PROJECT_ROOT/spring-webapp.jar"
+DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 SERVICE_PID=$(pgrep -f $JAR) # 실행중인 Spring 서버의 PID
 
 if [ -z "$SERVICE_PID" ]; then

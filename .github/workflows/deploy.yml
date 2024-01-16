@@ -1,12 +1,13 @@
-name: CI-CD
+name: Deploy to Amazon EC2
 
-# 어떤 브랜치에 push시 github action CI를 동작시킬지
 on:
   push:
     branches:
+      - master
       - production
-# 환경 변수 설정
-# 생성한 Code Deploy와 S3의 이름을 설정한다.
+
+# 본인이 설정한 값을 여기서 채워넣습니다.
+# 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: my-cicd-bucket-5
@@ -18,7 +19,6 @@ env:
 permissions:
   contents: read
 
-# push 시 수행할 일들 정의
 jobs:
   deploy:
     name: Deploy
@@ -28,7 +28,7 @@ jobs:
     steps:
       # (1) 기본 체크아웃
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # (2) JDK 11 세팅
       - name: Set up JDK 11
@@ -41,21 +41,6 @@ jobs:
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
-      # (2-2) yml 파일 세팅
-#      - name: Set yaml file
-#        uses: microsoft/variable-substitution@v1
-#        with:
-#          files: ${{ env.RESOURCE_PATH }}
-#        env:
-#          spring.datasource.url: ${{secrets.DB_URL}}
-#          spring.datasource.username: ${{secrets.DB_USERNAME}}
-#          spring.datasource.password: ${{secrets.DB_PASSWORD}}
-#          jwt.secret : ${{secrets.JWT_SECRET_KEY}}
-#          jwt.refresh : ${{secrets.JWT_REFRESH_SECRET_KEY}}
-#          jwt.access-token-seconds: ${{secrets.JWT_TOKEN_VALIDITY}}
-#          jwt.refresh-token-seconds: ${{secrets.JWT_TOKEN_VALIDITY}}
-
-
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
@@ -66,7 +51,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY  }}
+          aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CICD_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
