@@ -1,7 +1,7 @@
 #!/bin/bash
 PROJECT_NAME="app"
 JAR_PATH="/home/ubuntu/$PROJECT_NAME/build/libs/*.jar"
-DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/cicd-0.0.1-SNAPSHOT.jar
+DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
 DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
 APPLICATION_LOG_PATH="/home/ubuntu/$PROJECT_NAME/application.log"
@@ -30,7 +30,8 @@ else
   kill -9 $CURRENT_PID
 fi
 # spring.profiles.active는 application.yml에 명시하고 빌드시에 이미 포함됨.
-DEPLOY_JAR="$DEPLOY_PATH/build/libs/$JAR_NAME"
+#DEPLOY_JAR="$DEPLOY_PATH/build/libs/$JAR_NAME"
+DEPLOY_JAR="/home/ubuntu/app/cicd-0.0.1-SNAPSHOT.jar
 echo "> DEPLOY_JAR 배포" >> $DEPLOY_LOG_PATH
 nohup java -jar $DEPLOY_JAR >> $APPLICATION_LOG_PATH 2> $DEPLOY_ERR_LOG_PATH &
 
