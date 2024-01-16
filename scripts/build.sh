@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_NAME="neoul"
+PROJECT_NAME="app"
 JAR_PATH="/home/ubuntu/$PROJECT_NAME/build/libs/*.jar"
 DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
