@@ -1,7 +1,7 @@
 #!/bin/bash
 PROJECT_NAME="app"
 JAR_PATH="/home/ubuntu/$PROJECT_NAME/build/libs/*.jar"
-DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME
+DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/cicd-0.0.1-SNAPSHOT.jar
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
 DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
 APPLICATION_LOG_PATH="/home/ubuntu/$PROJECT_NAME/application.log"
