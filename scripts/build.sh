@@ -31,7 +31,7 @@ else
 fi
 # spring.profiles.active는 application.yml에 명시하고 빌드시에 이미 포함됨.
 #DEPLOY_JAR="$DEPLOY_PATH/build/libs/$JAR_NAME"
-DEPLOY_JAR="/home/ubuntu/app/cicd-0.0.1-SNAPSHOT.jar
+DEPLOY_JAR="/home/ubuntu/app/build/libs/cicd-0.0.1-SNAPSHOT.jar
 echo "> DEPLOY_JAR 배포" >> $DEPLOY_LOG_PATH
 nohup java -jar $DEPLOY_JAR >> $APPLICATION_LOG_PATH 2> $DEPLOY_ERR_LOG_PATH &
 
