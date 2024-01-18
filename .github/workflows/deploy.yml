@@ -3,7 +3,7 @@ name: Deploy to Amazon EC2
 on:
   push:
     branches:
-      - master
+      - production
 
 # 본인이 설정한 값을 여기서 채워넣습니다.
 # 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
@@ -33,6 +33,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
 
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
