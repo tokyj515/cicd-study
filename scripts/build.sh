@@ -1,40 +1,34 @@
 #!/bin/bash
-PROJECT_NAME="app"
-JAR_PATH="/home/ubuntu/$PROJECT_NAME/build/libs/*.jar"
-DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
-DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
-DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
-APPLICATION_LOG_PATH="/home/ubuntu/$PROJECT_NAME/application.log"
-BUILD_JAR=$(ls $JAR_PATH)
-JAR_NAME=$(basename $BUILD_JAR)
 
-#MODULE_NAME="module-api"
-#CONTEXT="dev"
+REPOSITORY=/home/ubuntu
+PROJECT_NAME=app
+JAR_PATH="/home/ubuntu/$PROJECT_NAME/build/libs/cicd-0.0.1-SNAPSHOT.jar"
 
-echo "===== 배포 시작 : $(date +%c) =====" >> $DEPLOY_LOG_PATH
+#echo "> Build 파일 복사"
+#cp $REPOSITORY/zip/*.jar $REPOSITORY/
 
-echo "> build 파일명: $JAR_NAME" >> $DEPLOY_LOG_PATH
-echo "> build 파일 복사" >> $DEPLOY_LOG_PATH
-cp $BUILD_JAR $DEPLOY_PATH
+echo "> 현재 구동중인 애플리케이션 pid 확인"
+# 수행 중인 애플리케이션 프로세스 ID => 구동 중이면 종료하기 위함
+CURRENT_PID=$(pgrep -fl $PROJECT_NAME | grep jar | awk '{print $1}')
 
-echo "> 현재 동작중인 어플리케이션 pid 체크" >> $DEPLOY_LOG_PATH
-CURRENT_PID=$(pgrep -f $JAR_NAME)
-
-if [ -z $CURRENT_PID ]
-then
-  echo "> 현재 동작중인 어플리케이션 존재 X" >> $DEPLOY_LOG_PATH
+echo "현재 구동중인 어플리케이션 pid: $CURRENT_PID"
+if [ -z "$CURRENT_PID" ]; then
+    echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
 else
-  echo "> 현재 동작중인 어플리케이션 존재 O" >> $DEPLOY_LOG_PATH
-  echo "> 현재 동작중인 어플리케이션 강제 종료 진행" >> $DEPLOY_LOG_PATH
-  echo "> kill -9 $CURRENT_PID" >> $DEPLOY_LOG_PATH
-  kill -9 $CURRENT_PID
+    echo "> kill -15 $CURRENT_PID"
+    kill -15 $CURRENT_PID
+    sleep 5
 fi
-# spring.profiles.active는 application.yml에 명시하고 빌드시에 이미 포함됨.
-#DEPLOY_JAR="$DEPLOY_PATH/build/libs/$JAR_NAME"
-DEPLOY_JAR="/home/ubuntu/app/build/libs/cicd-0.0.1-SNAPSHOT.jar
-echo "> DEPLOY_JAR 배포" >> $DEPLOY_LOG_PATH
-nohup java -jar $DEPLOY_JAR >> $APPLICATION_LOG_PATH 2> $DEPLOY_ERR_LOG_PATH &
 
-sleep 3
+echo "> 새 어플리케이션 배포"
+#JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+echo "> JAR_PATH: $JAR_PATH"
 
-echo "> 배포 종료 : $(date +%c)" >> $DEPLOY_LOG_PATH
+#echo "> $JAR_NAME 에 실행권한 추가"
+chmod +x $JAR_PATH # Jar 파일은 실행 권한이 없는 상태이므로 권한 부여
+
+echo "> $JAR_PATH 실행"
+nohup java -jar $JAR_PATH >> $APPLICATION_LOG_PATH 2> $DEPLOY_ERR_LOG_PATH &
+
+# nohup 실행 시 CodeDeploy는 무한 대기한다. 이를 해결하기 위해 nohup.out 파일을 표준 입출력용으로 별도로 사용한다.
+# 이렇게 하지 않으면 nohup.out 파일이 생성되지 않고 CodeDeploy 로그에 표준 입출력이 출력된다.
